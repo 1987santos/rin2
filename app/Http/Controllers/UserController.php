@@ -85,7 +85,7 @@ class UserController extends Controller
                 }
             }],
         ]);
-        // 'email' => ['required', 'unique:App\Models\User,email,' . $id],
+        
         $user = User::findOrFail($id);
 
         $input = $request->all();
@@ -94,13 +94,6 @@ class UserController extends Controller
 
         return redirect()->route('user_list')->with('success','User updated successfully!');        
      }
-
-    public function stopImpersonate()
-    {
-        Auth::user()->stopImpersonating();
-
-        return redirect()->back();
-    }
 
     /**
      * Impersonate the given user.
