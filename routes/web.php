@@ -21,9 +21,10 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/user/list', [App\Http\Controllers\UserController::class, 'list'])->name('user_list');
-Route::get('/user/dashboard/{id}', [App\Http\Controllers\UserController::class, 'dashboard'])->name('user_dashboard');
 Route::get('/user/edit/{id}', [App\Http\Controllers\UserController::class, 'edit'])->name('user_edit');
 Route::put('/user/update/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('user_update');
+Route::get('/user/impersoante/{id}', [App\Http\Controllers\UserController::class, 'impersonate'])->name('user_impersonate');
+Route::get('/user/revert', [App\Http\Controllers\UserController::class, 'revertImpersonate'])->name('user_revert_impersonate');
 
 Route::get('/notification/dashboard', [App\Http\Controllers\NotificationController::class, 'index'])->name('notification_dashboard');
 Route::get('/notification/create', [App\Http\Controllers\NotificationController::class, 'create'])->name('create_notification');

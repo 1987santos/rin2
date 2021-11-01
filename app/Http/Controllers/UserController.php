@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Service\Twilio\PhoneNumberLookupService;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -77,14 +78,14 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => ['required', 'unique:App\Models\User,email,' . $id],
+            'email' => ['required', 'email', 'unique:App\Models\User,email,' . $id],
             'phone_number' => ['required', 'string', function ($attribute, $value, $fail) {
                 if (! $this->service->validate($value)) {
                     $fail(sprintf('The value provided (%s) is not a valid phone number.', $value));
                 }
             }],
         ]);
-
+        // 'email' => ['required', 'unique:App\Models\User,email,' . $id],
         $user = User::findOrFail($id);
 
         $input = $request->all();
@@ -94,21 +95,44 @@ class UserController extends Controller
         return redirect()->route('user_list')->with('success','User updated successfully!');        
      }
 
-     /**
-     * Show the user dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-     public function dashboard(Request $request, $id)
-     {
-        $query =  User::where('id', $id)->where('notification', 1)->first();
+    public function stopImpersonate()
+    {
+        Auth::user()->stopImpersonating();
 
-        $notificationData = [];
-        if(false == is_null($query))
-        {
-            $notificationData =  $query->unreadNotifications->where('expiry_date', '>', NOW());
+        return redirect()->back();
+    }
+
+    /**
+     * Impersonate the given user.
+     *
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function impersonate(Request $request, $id)
+    {
+        if ($id !== Auth::user()->id) {
+            if(empty(session()->has('originalUserId'))) {
+                session()->put('originalUserId', Auth::user()->id);
+            }
+
+            Auth::loginUsingId($id);
         }
-        
-        return view('user/dashboard', compact('notificationData'));
-     }
+
+        return redirect('/home');
+    }
+
+    /**
+     * Revert to the original user.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function revertImpersonate()
+    {
+        Auth::loginUsingId(session()->get('originalUserId'));
+
+        session()->forget('originalUserId');
+
+        return redirect('/home');
+    }
+    
 }

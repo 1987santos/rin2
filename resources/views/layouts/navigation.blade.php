@@ -37,31 +37,17 @@
                 @else
                 
                 <li class="nav-item dropdown">
-                        @if(true == isset($notificationData))
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            <i class="fa fa-globe" style="font-size:20px"></i> <span class="badge badge-light" style="background:red; position:relative; top:-15px; left:-10px" id="notification_count">{{count($notificationData)}}</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            @forelse($notificationData as $notification)
-                                <a class="dropdown-item notify_action" href="javascript:void(0)" data-notify-id="{{$notification->id}}">
-                                    {{$notification->data['message']}}
-                                </a>
-                            @empty
-                            @endforelse
-                        </div>
-                        @else
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            <i class="fa fa-globe" style="font-size:20px"></i> <span class="badge badge-light" style="background:red; position:relative; top:-15px; left:-10px" id="notification_count">{{count($loggedin_user_notifications)}}</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            @forelse($loggedin_user_notifications as $notification)
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <i class="fa fa-globe" style="font-size:20px"></i> <span class="badge badge-light" style="background:red; position:relative; top:-15px; left:-10px" id="notification_count">{{count($loggedin_user_notifications)}}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        @forelse($loggedin_user_notifications as $notification)
                             <a class="dropdown-item notify_action" href="javascript:void(0)" data-notify-id="{{$notification->id}}">
-                                    {{$notification->data['message']}}
-                                </a>
-                            @empty
-                            @endforelse
-                        </div>
-                        @endif
+                                {{$notification->data['message']}}
+                            </a>
+                        @empty
+                        @endforelse
+                    </div>
                         
                     </li>
                     <li class="nav-item dropdown">
@@ -70,6 +56,12 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            @if(!empty(session()->get('originalUserId')) && session()->get('originalUserId') != Auth::user()->id)
+                                <a class="dropdown-item" href="{{ route('user_revert_impersonate') }}">
+                                    {{ __('Revert Impersonate') }}
+                                </a>
+                            @endif  
+
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                                 document.getElementById('logout-form').submit();">

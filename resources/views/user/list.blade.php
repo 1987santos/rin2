@@ -69,7 +69,7 @@
                                     <td>{{count($user->unreadNotifications)}}</td>
                                     <td>{{($user->notification) ? 'On' : 'Off'}}</td>
                                     <td>
-                                        <a href="{{ route('user_dashboard', $user->id) }}" class="btn btn-primary" role="button" aria-disabled="true" target="_blank">Dashboard</a> 
+                                        <a href="{{ route('user_impersonate', $user->id) }}" class="btn btn-primary" role="button" aria-disabled="true">Impersonate</a> 
                                         <a href="{{ route('user_edit', $user->id) }}" class="btn btn-primary" role="button" aria-disabled="true">Edit User</a>
                                     </td>
                                 </tr>
